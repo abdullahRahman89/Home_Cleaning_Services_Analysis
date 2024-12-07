@@ -1,0 +1,128 @@
+# DataBase 14
+
+# step-1: Import Libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+Step-2: Load the Data
+# Step-2: Load the Data
+df = pd.read_csv("Home Cleaning Services.csv")
+
+output = [] #List to store output results
+output.append("Exploratory Data Analysis of Home Cleaning Services")
+output.append("================================================\n")
+
+print(df)
+
+
+Step-3: Explore the Data
+print(df.head()) #Display the first few rows
+output.append(f"First few rows: \n{df.head()}\n")
+
+# Get basic information abdout the dataSet
+df.info()
+
+
+print(df.describe()) # Summery statstics
+output.append(f"Summery statistics: \n{df.describe()}\n")
+
+Step-4: Clean the Data
+
+# Removing / fill up the value
+
+output.append("Data Cleaning Result:\n")
+# Check for missing values
+missing_values = df.isnull().sum()
+print(missing_values)
+output.append(f"Missing values: \n{missing_values}\n")
+
+# Fill or drop missing values as neccery
+df.dropna(inplace=True) # Drop rows with missing values
+
+# Convert the Date Column to 
+df['Date'] = pd.to_datetime(df['Date'])
+
+
+
+# Removing the duplicate cell
+# Check for duplicates
+duplicates = df.duplicated().sum()
+output.append(f"Number of Duplicates Dropped: {duplicates}\n")
+df.drop_duplicates(inplace=True)
+
+
+# print(df)
+
+Step-5: Analyze the Data
+# Total revenue from cleaning services
+total_revenue = df['Revenue'].sum()
+output.append(f"Total Revenue: ${total_revenue:.2f}\n")
+print(file=open("output.txt", "w"))
+
+# average price per Customer_Tyoe wise
+average_price_per_service = df.groupby('Customer_Type')['Revenue'].mean()
+output.append(f"Average Price per Customer Type: \n{average_price_per_service}\n")
+output.append(f"{average_price_per_service}\n")
+print(average_price_per_service)
+
+
+# Total services provided by region
+total_services_by_region = df['Region'].value_counts()
+output.append(f"Total Services by Region: \n")
+output.append(f"{total_services_by_region}\n")
+print(total_services_by_region)
+
+# Total Sell in every region
+reveneu_by_region = df.groupby('Region')['Revenue'].sum()
+output.append(f"Total Sell by Region:\n")
+output.append(f"{reveneu_by_region}\n")
+print(reveneu_by_region)
+
+Step-6: Visualize the data
+plt.figure(figsize=(10,6))
+plt.bar(total_services_by_region.index, total_services_by_region.values)
+plt.title("Total Services Provided by Region")
+plt.xlabel("Region")
+plt.ylabel("Number of Services")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig("total_services_by_region.png")
+plt.show()
+
+
+
+# Pie chart for total services by region
+plt.figure(figsize=(8,8))
+plt.pie(total_services_by_region.values, labels=total_services_by_region.index, autopct='%1.1f%%') # pie chart e konta koto kan ace seta mention korar jonno
+plt.title("Total Services Provided by Region")
+plt.axis('equal')
+plt.savefig("total_services_by_region_pie.png")
+plt.show()
+
+
+# bar plot of arrange price per service type
+plt.figure(figsize=(10,6))
+plt.bar(average_price_per_service.index, average_price_per_service.values)
+plt.title("Average Price per Service Type")
+plt.xlabel("Service Type")
+plt.ylabel("Average Price")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig("average_price_per_service.png")
+plt.show()
+
+
+# pie chart for arrage price per service type
+plt.figure(figsize=(8,8))
+plt.pie(average_price_per_service.values, labels=average_price_per_service.index, autopct='%1.1f%%') # pie chart e konta koto kan ace seta mention korar jonno
+plt.title("Average Price per Service Type")
+plt.axis('equal')
+plt.savefig("average_price_per_service_pie.png")
+plt.show()
+
+
+# Save output to a text file
+with open('anlysis_output.txt', 'w') as f:
+  f.writelines(output)
